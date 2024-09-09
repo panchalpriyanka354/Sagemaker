@@ -1,12 +1,11 @@
 import joblib
-import pandas as pd
+import boto3
+import os
 
-# Load the model
-def model_fn(model_dir):
-    model = joblib.load(f'{model_dir}/model.joblib')
-    return model
+s3 = boto3.client('s3')
+s3.download_file('ml-iris-demo-project-new-bucket', 'model/model.joblib', '/tmp/model.joblib')
 
-# Predict function
-def predict_fn(input_data, model):
-    data = pd.DataFrame(input_data)
-    return model.predict(data).tolist()
+model = joblib.load('/tmp/model.joblib')
+
+def predict(data):
+    return model.predict(data)
